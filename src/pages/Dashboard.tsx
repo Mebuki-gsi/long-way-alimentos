@@ -244,12 +244,36 @@ export default function Dashboard() {
         }
       }
 
-      const labels = ['<190g', '190-200g', '200-210g', '210-220g', '220-230g', '230-240g', '240-250g', '250+g'];
-      const bins = [0, 190, 200, 210, 220, 230, 240, 250, 9999];
-      const distribution = labels.map((label, i) => ({
-        label,
-        value: weights.filter(w => w >= bins[i] && w < bins[i + 1]).length
-      }));
+      // --- STATISTICAL HISTOGRAM BINS ---
+      // We focus on the "bulk" of the data (Mean +/- 3 StdDev) to avoid outliers ruining the chart
+      const binCount = 12;
+      const coreMin = Math.max(min, mean - 3 * std);
+      const coreMax = Math.min(max, mean + 3 * std);
+      const coreRange = coreMax - coreMin || 10;
+      const binWidth = coreRange / binCount;
+
+      const distribution: { label: string, value: number }[] = [];
+
+      // 1. Below Core Bin
+      const belowCount = weights.filter(w => w < coreMin).length;
+      if (belowCount > 0) {
+        distribution.push({ label: `<${coreMin.toFixed(0)}g`, value: belowCount });
+      }
+
+      // 2. Core Bins
+      for (let i = 0; i < binCount; i++) {
+        const bMin = coreMin + (i * binWidth);
+        const bMax = coreMin + ((i + 1) * binWidth);
+        const label = `${bMin.toFixed(0)}-${bMax.toFixed(0)}g`;
+        const count = weights.filter(w => w >= bMin && w < bMax).length;
+        distribution.push({ label, value: count });
+      }
+
+      // 3. Above Core Bin
+      const aboveCount = weights.filter(w => w >= coreMax).length;
+      if (aboveCount > 0) {
+        distribution.push({ label: `>${coreMax.toFixed(0)}g`, value: aboveCount });
+      }
 
       setUploadedData({
         stats: newStats,
@@ -585,17 +609,49 @@ export default function Dashboard() {
 
                 {stats && (
                   <div className="bg-white border border-gray-100 rounded-xl p-8 shadow-sm">
-                    <h3 className="text-gray-800 font-black text-sm uppercase tracking-widest mb-8 flex items-center gap-3">
-                      <span className="w-1.5 h-4 bg-blue-500 rounded-full" />
-                      Distribuição de Frequência
-                    </h3>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                      <div>
+                        <h3 className="text-gray-900 font-black text-sm uppercase tracking-widest flex items-center gap-3">
+                          <span className="w-1.5 h-4 bg-blue-500 rounded-full" />
+                          Distribuição de Frequência
+                        </h3>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1 ml-4 italic">
+                          Quantidade de amostras por faixa de peso
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                        <div className="w-3 h-3 bg-[#dc2626] rounded-sm" />
+                        <span className="text-[10px] font-black text-blue-900 uppercase tracking-tighter">Frequência (Unidades)</span>
+                      </div>
+                    </div>
+
                     <div className="h-[300px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={distribution}>
+                        <BarChart data={distribution} margin={{ top: 10, right: 30, left: 20, bottom: 50 }}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                          <XAxis dataKey="label" stroke="#babcbe" fontSize={10} axisLine={false} tickLine={false} />
-                          <YAxis stroke="#babcbe" fontSize={10} axisLine={false} tickLine={false} />
-                          <Tooltip cursor={{ fill: '#f8f9fa' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
+                          <XAxis
+                            dataKey="label"
+                            stroke="#64748b"
+                            fontSize={10}
+                            axisLine={false}
+                            tickLine={false}
+                            angle={-45}
+                            textAnchor="end"
+                            interval={0}
+                            tick={{ fill: '#64748b', fontWeight: 'bold' }}
+                          />
+                          <YAxis
+                            stroke="#64748b"
+                            fontSize={10}
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: '#64748b' }}
+                          />
+                          <Tooltip
+                            cursor={{ fill: '#f8f9fa' }}
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                            formatter={(value: any) => [`${value} unidades`, 'Frequência']}
+                          />
                           <Bar dataKey="value" fill="#dc2626" radius={[4, 4, 0, 0]} barSize={40} />
                         </BarChart>
                       </ResponsiveContainer>
