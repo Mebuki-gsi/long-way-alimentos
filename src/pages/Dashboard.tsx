@@ -49,6 +49,13 @@ export default function Dashboard() {
     loadHistory();
   }, []);
 
+  // Sync history when entering reports tab to ensure persistence
+  useEffect(() => {
+    if (activeTab === 'reports') {
+      loadHistory();
+    }
+  }, [activeTab]);
+
   // Auto-repair for old reports missing daily averages
   useEffect(() => {
     if (uploadedData && !uploadedData.dailyAverages && fullTableData.length > 0) {
