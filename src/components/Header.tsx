@@ -29,9 +29,9 @@ export default function Header() {
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center gap-2">
               <div className="bg-[#D32F2F] px-3 py-2 rounded-lg shadow-sm">
-                <img
-                  src="https://longwayalimentos.com.br/wp-content/uploads/2024/10/logo-branco-longway-1.svg"
-                  alt="Long Way"
+                <img 
+                  src="https://longwayalimentos.com.br/wp-content/uploads/2024/10/logo-branco-longway-1.svg" 
+                  alt="Long Way" 
                   className="h-8 w-auto object-contain"
                   referrerPolicy="no-referrer"
                 />
@@ -45,8 +45,9 @@ export default function Header() {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`font-medium transition-colors duration-200 text-sm uppercase tracking-wide ${isActive(item.path) ? 'text-red-600' : 'text-gray-600 hover:text-red-600'
-                  }`}
+                className={`font-medium transition-colors duration-200 text-sm uppercase tracking-wide ${
+                  isActive(item.path) ? 'text-red-600' : 'text-gray-600 hover:text-red-600'
+                }`}
               >
                 {item.name}
               </Link>
@@ -89,10 +90,11 @@ export default function Header() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`block px-3 py-3 text-base font-medium rounded-lg transition-colors ${isActive(item.path)
-                    ? 'text-red-600 bg-red-50'
-                    : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
-                    }`}
+                  className={`block px-3 py-3 text-base font-medium rounded-lg transition-colors ${
+                    isActive(item.path)
+                      ? 'text-red-600 bg-red-50'
+                      : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
+                  }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}

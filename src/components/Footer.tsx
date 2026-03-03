@@ -1,16 +1,17 @@
 
 import { Facebook, Instagram, Youtube, Phone, Mail, MapPin } from 'lucide-react';
+
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-16 border-t border-gray-800 print-hide">
+    <footer className="bg-gray-900 text-white py-16 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
-              <img
-                src="https://longwayalimentos.com.br/wp-content/uploads/2024/10/logo-branco-longway-1.svg"
-                alt="Long Way"
+              <img 
+                src="https://longwayalimentos.com.br/wp-content/uploads/2024/10/logo-branco-longway-1.svg" 
+                alt="Long Way" 
                 className="h-10 w-auto object-contain"
                 referrerPolicy="no-referrer"
               />
